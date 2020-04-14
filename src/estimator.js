@@ -1,10 +1,11 @@
 import fs from 'fs';
- const moneyLost = (infectionsByRequestedTime, percentageIncome, avgIncome, days) => {
+
+export const moneyLost = (infectionsByRequestedTime, percentageIncome, avgIncome, days) => {
   const estimatedLoss = infectionsByRequestedTime * percentageIncome * avgIncome * days;
   return parseFloat(estimatedLoss.toFixed(2));
 };
 
-const calcluateDays = (periodType, value) => {
+export const calcluateDays = (periodType, value) => {
   switch (periodType) {
     case 'months':
       return value * 30;
@@ -17,16 +18,15 @@ const calcluateDays = (periodType, value) => {
   }
 };
 
-const availableBeds = (totalHospitalBeds, severeCasesByRequestedTime) => {
+export const availableBeds = (totalHospitalBeds, severeCasesByRequestedTime) => {
   const occupied = 0.65 * totalHospitalBeds;
   const available = totalHospitalBeds - occupied;
   return Math.trunc(available - severeCasesByRequestedTime);
 };
- const infectionProjections = (currentlyInfected, days) => {
-  return currentlyInfected * (2 ** Math.trunc(days / 3));
-};
+/* eslint-disable-next-line */
+const infectionProjections = (currentlyInfected, days) => currentlyInfected * (2 ** Math.trunc(days / 3));
 
- const impactCalculator = ({
+const impactCalculator = ({
   reportedCases,
   totalHospitalBeds,
   periodType,
@@ -54,13 +54,15 @@ const availableBeds = (totalHospitalBeds, severeCasesByRequestedTime) => {
   };
 };
 
- const getTimeInMilliseconds = (startTime) => {
+// eslint-disable-next-line no-unused-vars
+export const getTimeInMilliseconds = (startTime) => {
   const NS_PER_SEC = 1e9; // time in nano seconds
   const NS_TO_MS = 1e6; // time in milli seconds
   const timeDifference = process.hrtime(startTime);
   return (timeDifference[0] * NS_PER_SEC + timeDifference[1]) / NS_TO_MS;
 };
- const saveToFile = (data, filename) => {
+// eslint-disable-next-line no-unused-vars
+export const saveToFile = (data, filename) => {
   fs.appendFile(filename, `${data}\n`, (err) => {
     if (err) {
       throw new Error('The data could not be saved');
@@ -73,9 +75,10 @@ const covid19ImpactEstimator = (data) => ({
   impact: impactCalculator({ ...data }, 10),
   severeImpact: impactCalculator({ ...data }, 50)
 });
- const formatAPIResponse = (estimateValues) => covid19ImpactEstimator(estimateValues);
- const jsonResponse = (request, response) => {
+export const formatAPIResponse = (estimateValues) => covid19ImpactEstimator(estimateValues);
+// eslint-disable-next-line no-unused-vars
+export const jsonResponse = (request, response) => {
   const result = request.body;
   response.status(200).send(formatAPIResponse(result));
 };
- export default covid19ImpactEstimator;
+export default covid19ImpactEstimator;
